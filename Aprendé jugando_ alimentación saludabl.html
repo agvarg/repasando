@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aprendé jugando: alimentación saludable</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#fff8ec;--card:#fff;--ink:#2b2b2b;--mut:#6b6254;--pri:#2e9e5b;--pri2:#1f7a43;--acc:#f59e0b;--bad:#d64545;--ok:#2e9e5b;--line:#eadfc8;--sel:#e9f8ef}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16201a;--card:#1f2c24;--ink:#f1efe8;--mut:#b5b9ae;--pri:#43c279;--pri2:#2e9e5b;--acc:#fbbf24;--bad:#ef6a6a;--ok:#43c279;--line:#35483b;--sel:#27402f}}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;font-size:18px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+h1{font-size:1.5rem;margin:.2em 0}
+.pts{background:var(--acc);color:#2b2b2b;border-radius:99px;padding:6px 14px;font-weight:800}
+.hero{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.tile:hover,.tile:focus-visible{border-color:var(--pri);transform:translateY(-2px)}
+.tile b{display:block;font-size:1.15rem}.tile span.e{font-size:2rem}.tile small{color:var(--mut)}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:14px;padding:12px 20px;font-weight:800}
+.btn:hover{background:var(--pri2)}
+.ghost{background:none;border:2px solid var(--line);border-radius:12px;padding:6px 12px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:10px 0}
+.bar i{display:block;height:100%;background:var(--pri);transition:width .3s}
+.q{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px}
+.q h2{margin:.2em 0 .6em;font-size:1.3rem}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.no{background:var(--bad);color:#fff;border-color:var(--bad)}
+.fb{margin:10px 0;padding:10px 14px;border-radius:12px;background:var(--sel)}
+.oct{display:inline-flex;align-items:center;justify-content:center;width:92px;height:92px;background:#000;color:#fff;font-weight:900;font-size:.62rem;text-align:center;line-height:1.1;padding:14px;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);letter-spacing:.02em}
+.seals{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:560px){.mem{grid-template-columns:repeat(4,1fr)}}
+.card{min-height:84px;border-radius:14px;border:2px solid var(--line);background:var(--pri);color:#fff;font-size:1.6rem;padding:6px;font-weight:800}
+.card.up{background:var(--card);color:var(--ink);font-size:.9rem;border-color:var(--acc)}
+.card.done{background:var(--sel);color:var(--ink);font-size:.9rem;border-color:var(--ok);cursor:default}
+.groups{display:grid;gap:6px;margin:8px 0}
+.groups div{border-radius:10px;padding:6px 10px;font-size:.95rem}
+.center{text-align:center}.big{font-size:3rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>🥗 Aprendé jugando</h1><div class="pts" id="pts">⭐ 0 puntos</div></header>
+<main id="app"></main>
+</div>
+<script>
+var pts=0,app=document.getElementById("app");
+var GR=["Frutas y verduras","Legumbres, cereales, papa, batata, choclo y mandioca","Leche, yogur y queso","Carnes y huevos","Aceites, frutas secas y semillas","Grupo opcional (ultraprocesados)"];
+var COL=["#c8f0d0","#fde9b0","#d6e8ff","#ffd6d6","#f3e3b5","#f9b9b9"];
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return s}
+function addPts(n){pts+=n;document.getElementById("pts").textContent="⭐ "+pts+" puntos"}
+
+/* ---------- Home ---------- */
+function home(){
+app.innerHTML='<div class="hero"><b>¡Hola! 👋</b> Vas a repasar cómo comer sano según las <b>Guías Alimentarias para la Población Argentina</b>, la <b>OMS</b> y la <b>Ley de etiquetado frontal</b>. Cada respuesta correcta suma puntos. ¡Elegí un juego!</div>'+
+'<div class="grid">'+
+tile("clas","🍎","Clasificá los alimentos","¿A qué grupo de la gráfica pertenece?")+
+tile("vf","✅","Verdadero o falso","Mitos y verdades de la alimentación")+
+tile("sel","🛑","Detective de sellos","Todo sobre los octógonos negros")+
+tile("num","🔢","Números clave","¿Cuántos vasos? ¿Cuántas porciones?")+
+tile("mem","🧠","Memoria","Encontrá las parejas")+
+tile("guia","📖","Repasá la gráfica","Los 6 grupos y consejos")+'</div><h2 style="margin:22px 0 6px">🎓 Preparación para el Premio Beca</h2><div class="grid">'+tile("sim","📝","Simulacro Premio Beca","Preguntas de las 4 áreas, con puntaje sobre 100")+tile("nat","🔬","Ciencias Naturales","Luna y eclipses, materiales, cuerpo humano y más")+tile("otras","📚","Lengua, Matemática y Sociales","Practicá cada área por separado")+
+'</div>';
+app.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){start(b.dataset.g)}});
+}
+function tile(g,e,t,s){return '<button class="tile" data-g="'+g+'"><span class="e">'+e+'</span><b>'+t+'</b><small>'+s+'</small></button>'}
+function start(g){({clas:clas,vf:vf,sel:sel,num:num,mem:mem,guia:guia,sim:sim,nat:nat,otras:otras,len:jlen,mat:jmat,soc:jsoc})[g]()}
+
+/* ---------- Quiz engine ---------- */
+function run(title,qs,intro){
+var i=0,ok=0,ar={};
+function show(){
+var q=qs[i];
+app.innerHTML='<button class="ghost" id="back">← Menú</button> <b>'+title+'</b><div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div><div class="q">'+(intro||"")+'<small>Pregunta '+(i+1)+' de '+qs.length+'</small><h2>'+q.t+'</h2><div id="os"></div><div id="fb"></div></div>';
+document.getElementById("back").onclick=home;
+var os=document.getElementById("os");
+q.o.forEach(function(txt,k){var b=document.createElement("button");b.className="opt";b.innerHTML=txt;
+b.onclick=function(){
+var all=os.querySelectorAll(".opt");all.forEach(function(x){x.disabled=true});
+all[q.a].classList.add("ok");
+var good=k===q.a;if(!good)b.classList.add("no");
+if(good){ok++;addPts(10)}if(q.ar){ar[q.ar]=ar[q.ar]||[0,0];ar[q.ar][1]++;if(good)ar[q.ar][0]++}
+var fb=document.getElementById("fb");
+fb.innerHTML='<div class="fb">'+(good?"🎉 <b>¡Muy bien!</b> ":"🤔 <b>Casi.</b> ")+q.e+'</div><button class="btn" id="nx">'+(i<qs.length-1?"Siguiente →":"Ver resultado")+'</button>';
+document.getElementById("nx").onclick=function(){i++;i<qs.length?show():end()};
+};os.appendChild(b)});
+}
+function end(){
+var p=ok/qs.length,st=p>=.9?"🏆🏆🏆":p>=.6?"🥇🥇":"🥈";
+var msg=p>=.9?"¡Sos una experta en alimentación!":p>=.6?"¡Muy buen trabajo!":"¡Buen intento! Repasá y probá de nuevo.";
+app.innerHTML='<div class="q center"><div class="big">'+st+'</div><h2>'+ok+' de '+qs.length+' correctas</h2><p>'+msg+'</p>'+det(ar)+'<button class="btn" id="again">Jugar otra vez</button> <button class="ghost" id="m">Menú</button></div>';
+document.getElementById("again").onclick=function(){i=0;ok=0;ar={};qs=sh(qs);show()};
+document.getElementById("m").onclick=home;
+}
+show();
+}
+
+/* ---------- Game 1: clasificar ---------- */
+function clas(){
+var it=[["🍎 Manzana",0],["🥕 Zanahoria",0],["🥬 Acelga",0],["🍊 Naranja",0],["🫘 Lentejas",1],["🍚 Arroz integral",1],["🥔 Papa",1],["🌽 Choclo",1],["🍠 Batata",1],["🥣 Avena",1],["🥛 Yogur",2],["🧀 Queso",2],["🥛 Leche",2],["🥚 Huevo",3],["🐟 Pescado",3],["🥩 Carne vacuna",3],["🫒 Aceite de oliva crudo",4],["🌰 Nueces sin sal",4],["🌻 Semillas de girasol",4],["🥤 Gaseosa",5],["🍪 Galletitas dulces",5],["🍬 Golosinas",5],["🌭 Salchichas",5],["🍔 Hamburguesa de paquete",5],["🍟 Papas fritas de paquete",5],["🍦 Helado",5],["🥫 Mayonesa",5]];
+var nt=["Frutas y verduras: tienen que ser la mayor parte de tu alimentación.","Este grupo incluye legumbres, cereales (mejor integrales) y también papa, batata, choclo y mandioca, porque su composición es parecida a la de los cereales.","Se recomiendan 3 porciones al día de leche, yogur o queso.","Carnes y huevo: se puede comer hasta un huevo por día.","Aceite crudo, frutas secas y semillas aportan nutrientes esenciales.","Es el grupo rojo: productos ultraprocesados con exceso de azúcares, grasas o sal. No hace falta incluirlos en la alimentación diaria."];
+var qs=sh(it).slice(0,10).map(function(x){return{t:"¿A qué grupo pertenece <b>"+x[0]+"</b>?",o:GR,a:x[1],e:nt[x[1]]}});
+run("Clasificá los alimentos",qs);
+}
+
+/* ---------- Game 2: V/F ---------- */
+function vf(){
+var L=[
+["Hay que tomar al menos 8 vasos de agua segura por día.",1,"Sí: al menos 2 litros de líquidos sin azúcar, preferentemente agua, y sin esperar a tener sed."],
+["Un jugo industrializado o en polvo es tan sano como el agua.",0,"Falso: los jugos industrializados y en polvo son bebidas azucaradas. Conviene elegir agua segura."],
+["La papa y la batata se incluyen en el grupo de los cereales y legumbres.",1,"Verdadero: junto con el choclo y la mandioca, tienen una composición nutricional similar a los cereales."],
+["Es mejor comer comidas caseras que productos procesados.",1,"Las comidas caseras con alimentos frescos son más sanas y más económicas."],
+["Hay que ponerle bastante sal a las comidas para que sean saludables.",0,"Falso: conviene cocinar con poca sal, sacar el salero de la mesa y usar condimentos como orégano, pimienta o perejil."],
+["Los fiambres y embutidos tienen mucho sodio.",1,"Verdadero: los fiambres, embutidos, caldos, sopas y conservas tienen mucho sodio. ¡Leé las etiquetas!"],
+["Conviene comer pescado 2 o más veces por semana.",1,"Verdadero: pescado 2 o más veces, carnes blancas 2 veces y carnes rojas hasta 3 veces por semana."],
+["Se recomienda hacer 4 comidas al día: desayuno, almuerzo, merienda y cena.",1,"Y además, al menos 30 minutos de actividad física por día."],
+["Las verduras y frutas deberían ser la parte más chica de tu alimentación.",0,"Falso: la mayor parte de tu alimentación debería estar compuesta por frutas y verduras."],
+["La OMS dice que el azúcar libre no debería superar el 10 % de las calorías diarias.",1,"Verdadero. Reducirlo al 5 % o menos aporta todavía más beneficios."],
+["Un producto con sellos puede tener dibujitos de personajes infantiles en el envase.",0,"Falso: la ley 27.642 lo prohíbe, igual que los regalos, premios o juegos en el envase."],
+["El sello de advertencia es un octógono negro con letras blancas.",1,"Verdadero: forma de octógono negro con borde y letras blancas en mayúsculas."],
+["Si un alimento tiene sellos, se puede vender en el kiosco de la escuela.",0,"Falso: los alimentos con al menos 1 sello no pueden venderse ni promocionarse en escuelas de nivel inicial, primario y secundario."],
+["Comer tranquilo y moderar el tamaño de las porciones es parte de comer sano.",1,"Sí: comer tranquilo, en lo posible acompañado, y moderar las porciones."],
+["Los niños de 10 años o menos no necesitan comer fibra.",0,"Falso: la OMS recomienda fibra todos los días (al menos 21 g entre los 6 y 9 años), que viene de cereales integrales, verduras, frutas y legumbres."]
+];
+var qs=sh(L).slice(0,10).map(function(x){return{t:x[0],o:["✅ Verdadero","❌ Falso"],a:x[1]?0:1,e:x[2]}});
+run("Verdadero o falso",qs);
+}
+
+/* ---------- Game 3: sellos ---------- */
+function sel(){
+var intro='<div class="seals"><span class="oct">EXCESO EN AZÚCARES</span><span class="oct">EXCESO EN SODIO</span><span class="oct">EXCESO EN GRASAS SATURADAS</span></div>';
+var Q=[
+["¿Cuántos tipos de “EXCESO” puede advertir un sello? (azúcares, sodio, grasas saturadas, grasas totales, calorías)",["3","5","7"],1,"Son 5: exceso en azúcares, sodio, grasas saturadas, grasas totales y calorías."],
+["¿Qué forma y color tienen los sellos?",["Círculo verde","Octógono negro con letras blancas","Triángulo amarillo"],1,"Son octógonos negros con borde y letras blancas en mayúsculas."],
+["¿En qué parte del envase tiene que estar el sello?",["En la cara principal","Escondido atrás","Solo en las cajas grandes"],0,"Va en la cara principal: donde figura la marca y el nombre del producto."],
+["Un producto tiene edulcorantes. ¿Qué leyenda debe llevar?",["“Contiene edulcorantes, no recomendable en niños/as”","“Apto para todos”","Ninguna"],0,"Debajo de los sellos debe decir: “Contiene edulcorantes, no recomendable en niños/as”."],
+["Si un producto tiene cafeína, la leyenda dice:",["“Contiene cafeína. Evitar en niños/as”","“Da energía”","“Contiene vitaminas”"],0,"Así es: “Contiene cafeína. Evitar en niños/as”."],
+["¿Cuál de estos NO es un nutriente crítico?",["Azúcares","Sodio","Vitamina C"],2,"Los nutrientes críticos son azúcares, sodio, grasas saturadas y grasas totales."],
+["¿Cuál de estos productos no necesita sello aunque se consuma en cantidad?",["Aceites vegetales, frutos secos, sal común y azúcar común","Gaseosas","Galletitas rellenas"],0,"La ley exceptúa el azúcar común, los aceites vegetales, los frutos secos y la sal común de mesa."],
+["Un alimento con sellos, ¿puede mostrar un dibujo animado para atraer a niños?",["Sí, si es divertido","No, está prohibido","Solo en la tele"],1,"La ley prohíbe personajes infantiles, celebridades, deportistas, mascotas y regalos en envases y publicidad de productos con sellos."],
+["¿Pueden publicitarse alimentos con sellos dirigidos a niños, niñas y adolescentes?",["Sí","No, está prohibido","Solo los fines de semana"],1,"Está prohibida la publicidad, promoción y patrocinio dirigida a niños, niñas y adolescentes."],
+["¿Dónde NO pueden venderse productos con al menos 1 sello?",["Supermercados","Escuelas de nivel inicial, primario y secundario","Almacenes"],1,"En las escuelas se promueve la educación alimentaria y no se venden productos con sellos."],
+["¿Qué número de ley es la de etiquetado frontal?",["Ley 27.642","Ley 1.000","Ley 24.001"],0,"Es la Ley 27.642 de Promoción de la Alimentación Saludable."],
+["Ante dos productos parecidos, ¿cuál conviene elegir?",["El que tiene más sellos","El que tiene menos sellos o ninguno","El que tiene el envase más lindo"],1,"Los sellos te advierten los excesos. Cuantos menos tenga, mejor, y lo ideal son alimentos frescos que ni siquiera tienen envase."]
+];
+var qs=sh(Q).slice(0,10).map(function(x){return{t:x[0],o:x[1],a:x[2],e:x[3]}});
+run("Detective de sellos",qs,intro);
+}
+
+/* ---------- Game 4: números ---------- */
+function num(){
+var Q=[
+["¿Cuántos vasos de agua segura se recomienda tomar por día?",["2","8","15"],1,"Al menos 8 vasos (más de 2 litros de líquidos sin azúcar)."],
+["¿Cuántas porciones de frutas y verduras por día?",["1","5","10"],1,"5 porciones: por ejemplo medio plato de verduras en el almuerzo, medio en la cena y 2 o 3 frutas."],
+["¿Cuántas porciones de leche, yogur o queso por día?",["3","10","Ninguna"],0,"3 porciones por día, porque aportan calcio."],
+["¿Cuánto movimiento por día se sugiere como mínimo?",["5 minutos","30 minutos","10 horas"],1,"Al menos 30 minutos de actividad física moderada."],
+["¿Cuántas cucharadas soperas de aceite crudo por día?",["2","10","0"],0,"Dos cucharadas soperas de aceite crudo como condimento."],
+["¿Cuántas veces por semana conviene comer pescado?",["Nunca","2 o más","Todos los días"],1,"Pescado 2 o más veces por semana."],
+["¿Hasta cuántos huevos por día se pueden comer?",["Hasta 1","6","Ninguno"],0,"Se puede incluir hasta un huevo por día."],
+["¿Qué tamaño tiene la porción diaria de carne?",["Como la palma de la mano","Como un balón","Como una moneda"],0,"La porción se representa por el tamaño de la palma de la mano."],
+["La OMS recomienda a partir de los 10 años al menos cuántos gramos de frutas y verduras al día:",["100 g","400 g","1 kg"],1,"Al menos 400 g. Entre los 6 y 9 años, 350 g."],
+["Según la OMS, la sal en adultos tiene que ser menos de:",["5 g por día","50 g por día","Da igual"],0,"Menos de 5 g de sal por día."],
+["Según la OMS, las calorías de los azúcares libres no deberían pasar de:",["10 %","50 %","80 %"],0,"No más del 10 % de las calorías diarias (y mejor aún 5 % o menos)."],
+["La OMS dice que los carbohidratos aporten principalmente de:",["Golosinas","Cereales integrales, verduras, frutas y legumbres","Gaseosas"],1,"Los carbohidratos de calidad vienen de cereales integrales, verduras, frutas y legumbres."]
+];
+var qs=sh(Q).slice(0,10).map(function(x){return{t:x[0],o:x[1],a:x[2],e:x[3]}});
+run("Números clave",qs);
+}
+
+/* ---------- Game 5: memoria ---------- */
+function mem(){
+var P=[["💧 Agua","8 vasos por día"],["🍎 Frutas y verduras","5 porciones por día"],["🧀 Lácteos","3 porciones por día"],["🐟 Pescado","2 o más veces por semana"],["🫒 Aceite crudo","2 cucharadas soperas"],["🏃 Actividad física","30 minutos por día"]];
+var cs=[];P.forEach(function(p,k){cs.push({k:k,t:p[0]});cs.push({k:k,t:p[1]})});cs=sh(cs);
+var open=[],found=0,moves=0,lock=false;
+app.innerHTML='<button class="ghost" id="back">← Menú</button> <b>Memoria</b> · Juntá cada alimento o hábito con su recomendación diaria <span id="mv" style="float:right">Intentos: 0</span><div class="mem" style="margin-top:12px" id="g"></div><div id="fb"></div>';
+document.getElementById("back").onclick=home;
+var g=document.getElementById("g");
+cs.forEach(function(c){var b=document.createElement("button");b.className="card";b.textContent="❓";
+b.onclick=function(){
+if(lock||b.classList.contains("up")||b.classList.contains("done"))return;
+b.classList.add("up");b.textContent=c.t;open.push([b,c]);
+if(open.length===2){moves++;document.getElementById("mv").textContent="Intentos: "+moves;
+var a=open[0],d=open[1];
+if(a[1].k===d[1].k){a[0].className=d[0].className="card done";found++;addPts(10);open=[];
+if(found===P.length){document.getElementById("fb").innerHTML='<div class="fb center">🏆 <b>¡Lo lograste en '+moves+' intentos!</b><br><button class="btn" id="ag">Jugar otra vez</button></div>';document.getElementById("ag").onclick=mem}}
+else{lock=true;setTimeout(function(){a[0].className=d[0].className="card";a[0].textContent=d[0].textContent="❓";open=[];lock=false},900)}}
+};g.appendChild(b)});
+}
+
+/* ---------- Premio Beca ---------- */
+var VF=["✅ Verdadero","❌ Falso"];
+function vfq(t,v,e){return[t,VF,v?0:1,e]}
+function mk(ar,L,n){return sh(L).slice(0,n).map(function(x){var c=x[1][x[2]],o=x[1][0]===VF[0]?x[1]:sh(x[1]);return{t:x[0],o:o,a:o.indexOf(c),e:x[3],ar:ar}})}
+function det(a){var k=Object.keys(a),W={"Lengua":30,"Matemática":30,"Sociales":20,"Naturales":20};if(!k.length)return"";var s=k.map(function(n){return n+": "+a[n][0]+"/"+a[n][1]}).join(" · "),p="";if(k.length==4){var t=0;k.forEach(function(n){t+=W[n]*a[n][0]/a[n][1]});p='<h2>🎓 Puntaje simulado: '+Math.round(t)+' / 100</h2>'}return p+'<p>'+s+'</p>'}
+var NAT=[
+["Las cuatro fases principales de la Luna son:",["Nueva, cuarto creciente, llena y cuarto menguante","Día, tarde, noche y madrugada","Roja, azul, blanca y negra"],0,"Cambian según cuánta parte iluminada de la Luna vemos desde la Tierra."],
+["¿Tiene la Luna luz propia?",["No, refleja la luz del Sol","Sí, igual que las estrellas","Solo en luna llena"],0,"El Sol es una estrella y tiene luz propia. La Luna es un satélite natural de la Tierra."],
+["¿Por qué vemos a la Luna cambiar de forma?",["Al girar alrededor de la Tierra vemos distinta parte de su cara iluminada","Porque la sombra de la Tierra la tapa","Porque se achica y se agranda"],0,"La sombra de la Tierra solo interviene en los eclipses de Luna."],
+["En un eclipse de Sol, la Luna está…",["entre el Sol y la Tierra","detrás de la Tierra","muy lejos del Sol y la Tierra"],0,"Su sombra cae sobre una parte de la Tierra. Si no tapa todo el Sol, se ve un anillo luminoso (eclipse anular)."],
+["En un eclipse de Luna, la Luna pasa por la sombra de…",["la Tierra","Marte","el Sol"],0,"Se ve desde cualquier lugar donde la Luna esté sobre el horizonte."],
+["¿Por qué no hay eclipses todos los meses?",["La órbita de la Luna está inclinada respecto de la de la Tierra alrededor del Sol","La Luna se apaga","El Sol cambia de lugar"],0,"Solo hay eclipse cuando Sol, Tierra y Luna quedan alineados."],
+["El movimiento de la Luna alrededor de la Tierra se llama…",["traslación","rotación","gravedad"],0,"La rotación es girar sobre su propio eje."],
+["Quemar un fósforo es un cambio…",["químico","físico"],0,"Se forman sustancias nuevas (cenizas, humo) y no se puede volver atrás."],
+["Derretir un cubito de hielo es un cambio…",["físico","químico"],0,"Cambia de estado, pero sigue siendo agua."],
+["Hornear una masa de pan o pizza es un cambio…",["químico","físico"],0,"Con el calor, los ingredientes se transforman en materiales nuevos."],
+["Mezclar aceite y vinagre es un cambio…",["físico","químico"],0,"Es una mezcla: no se forman sustancias nuevas."],
+["Secar frutas (pasas, orejones) para conservarlas es…",["deshidratación","refrigeración","agregado de sustancias"],0,"Se les quita el agua. Otros métodos: el frío de la heladera y agregar sal, azúcar o vinagre."],
+["Los frascos de mermelada se hierven antes de llenarlos para…",["esterilizarlos y eliminar microorganismos","que cambien de color","que se achiquen"],0,"Después se cierran bien (sellado hermético) y la mermelada dura mucho tiempo."],
+["¿Qué sistema transforma los alimentos en sustancias más simples?",["Digestivo","Respiratorio","Excretor"],0,"El intestino absorbe los nutrientes."],
+["El corazón pertenece al sistema…",["circulatorio","digestivo","respiratorio"],0,"Transporta nutrientes a las células y los desechos que ellas producen."],
+["El intercambio de oxígeno y dióxido de carbono se hace en los…",["pulmones","riñones","intestinos"],0,"Es la función del sistema respiratorio."],
+["Los riñones forman parte del sistema…",["excretor (urinario)","circulatorio","digestivo"],0,"Eliminan los desechos del organismo."],
+vfq("La multiplicación vegetativa y la reproducción por esporas son formas de reproducción asexual.",true,"No intervienen gametas ni dos sexos."),
+vfq("En la reproducción sexual intervienen gametas y hay intercambio de información genética.",true,"Los descendientes heredan información de ambos progenitores."),
+["La maduración biológica para la reproducción humana…",["empieza en la pubertad y está regulada por hormonas sexuales","ocurre desde el nacimiento","no produce ningún cambio"],0,"Se manifiesta con cambios corporales externos e internos. Es necesaria, pero no suficiente."],
+["El vapor de una pava es agua en estado…",["gaseoso","sólido","líquido"],0,"El hielo es sólido y el agua de la canilla es líquida."],
+vfq("Según los científicos, el cambio climático provocará una disminución de la temperatura mundial promedio.",false,"Falso: se espera un aumento de la temperatura, derretimiento de casquetes polares e inundaciones."),
+["Un paracaidista en «caída libre» cae por efecto de…",["la gravedad, que atrae los cuerpos hacia la Tierra","el viento","la Luna"],0,"Cae cada vez más rápido hasta que abre el paracaídas."],
+["Al abrir el paracaídas, la velocidad de caída…",["disminuye porque aumenta la resistencia del aire","aumenta","no cambia"],0,"La tela ofrece mucha superficie y el aire frena la caída."],
+["Según la tabla de nutrientes, ¿qué pan tiene más fibra y más hierro por 100 g?",["Pan integral","Pan blanco"],0,"El pan integral tiene 8,5 g de fibra y 2,7 mg de hierro; el blanco, 2,2 g y 1,6 mg."]
+];
+var LEN=[
+["En un cuento policial…",["un detective investiga y se busca resolver un delito","hay brujas, ogros y pócimas","los personajes viven en el futuro con robots"],0,"Esas son las características del género policial."],
+["Un cuento fantástico incluye…",["un hecho sobrenatural que no se puede explicar con la razón","solo animales que hablan","hechos que siempre tienen explicación"],0,"En lo fantástico irrumpe algo inexplicable en un mundo cotidiano."],
+["En «Historia repetida» de Anderson Imbert, ¿qué hecho lo vuelve fantástico?",["El muchacho atraviesa la pared y desaparece","Malcom corre por la ciudad","Los criminales persiguen a Malcom"],0,"Es el hecho inexplicable del cuento."],
+["Un poema está formado por versos que se agrupan en…",["estrofas","párrafos","capítulos"],0,"Los cuentos y noticias, en cambio, se organizan en párrafos."],
+["«Sus ojos brillaban como estrellas» contiene…",["una comparación","una pregunta","un sinónimo"],0,"La comparación une dos elementos con «como»."],
+["«Tendió la mano distraídamente» está en tiempo…",["pretérito","presente","futuro"],0,"La acción ya ocurrió."],
+["¿Por qué lleva tilde «hábil»?",["Es grave y termina en consonante que no es n ni s","Es aguda y termina en vocal","Siempre se tildan los adjetivos"],0,"«Inútil» lleva tilde por la misma regla."],
+["En «Sacó un pañuelo, un cortaplumas, un dado y al final apareció la pieza», las comas separan…",["los elementos de una enumeración","una aclaración","un vocativo"],0,"Se enumeran los objetos que sacó del bolsillo."],
+["En «Su familia se trasladó muy pronto a Buenos Aires», el sujeto es…",["Su familia","se trasladó","a Buenos Aires"],0,"El verbo núcleo del predicado es «trasladó» (pretérito, modo indicativo)."],
+["En «Cursó estudios en la Escuela Normal», el sujeto es…",["tácito (él)","simple y expreso","compuesto"],0,"No aparece escrito, pero el verbo indica quién lo hizo."],
+["Un sinónimo de «espeluznante» es…",["aterrador","agradable","placentero"],0,"«Escalofriante» también sirve."],
+["«Julio Cortázar nació el 26 de agosto de 1914 en Bruselas…» es el comienzo de una…",["biografía","receta","poesía"],0,"Cuenta datos de la vida de una persona."],
+["En «Tía en dificultades», el narrador…",["cuenta en primera persona, como parte de la familia","es un narrador en tercera persona","es la tía"],0,"Dice «mi padre», «mis hermanas»: participa de la historia."]
+];
+var MAT=[
+["Paula puso $150, Valentina $230 y Lucía $220 para pagar 4 entradas iguales. Florencia no puso dinero. ¿Cuánto debe devolverle a Valentina?",["$80","$70","$150"],0,"Las 4 entradas salen $600, o sea $150 cada una. A Valentina le debe $80 y a Lucía $70."],
+["Los 4/5 de una edición son 2800 libros. ¿Cuántos libros tiene la edición completa?",["3500","3200","4200"],0,"1/5 = 2800 : 4 = 700, y 700 × 5 = 3500."],
+["Tres rectángulos iguales forman un rectángulo grande, con BC = 2,80 m (el lado largo de cada uno). ¿Cuánto mide AB?",["4,20 m","2,80 m","5,60 m"],0,"El lado corto mide 1,40 m, porque dos lados cortos igualan el largo. AB = 2,80 + 1,40."],
+["Con esas medidas (AB = 4,20 m y BC = 2,80 m), ¿cuál es el área de cada rectángulo pequeño?",["3,92 m²","11,76 m²","7 m²"],0,"2,80 × 1,40 = 3,92 m². El área del grande, 11,76 m², es el triple."],
+["En el Tangram, ¿qué fracción de la figura completa es cada triángulo grande?",["1/4","1/8","1/16"],0,"Cada triángulo pequeño es 1/16 de la figura: se necesitan 16 para cubrirla."],
+["¿Cuántos triángulos isósceles distintos se pueden construir con el lado desigual de 5 cm?",["Infinitos","Uno solo","Tres"],0,"Los dos lados iguales pueden medir cualquier valor mayor que 2,5 cm."],
+["Un portarretratos cuadrado de 13 × 13 venecitas tiene un hueco central de 7 × 7. ¿Cuántas venecitas se usan?",["120","169","49"],0,"13 × 13 − 7 × 7 = 169 − 49 = 120."],
+["Con una torta de 10 porciones se usan 400 g de harina. ¿Cuánta harina se necesita para 15 porciones?",["600 g","800 g","500 g"],0,"Es proporcionalidad: 400 g × 1,5 = 600 g."],
+["Si la arista de un cubo se duplica (de 2 m a 4 m), el volumen…",["se multiplica por 8 (de 8 m³ a 64 m³)","se duplica","se multiplica por 4"],0,"Volumen = arista³: 2³ = 8 y 4³ = 64."],
+["Hay 3 rutas de Buenos Aires a Córdoba y 4 caminos de Córdoba a Salta. ¿De cuántas maneras se viaja de Buenos Aires a Salta pasando por Córdoba?",["12","7","34"],0,"3 × 4 = 12."],
+["¿Cuánto es el 30 % de 120 alumnos?",["36","30","40"],0,"120 × 30 : 100 = 36."],
+["Un cuadrilátero con diagonales perpendiculares e iguales que se cortan en el punto medio es un…",["cuadrado","trapecio","rombo no cuadrado"],0,"El rombo tiene diagonales perpendiculares, pero no iguales."],
+["Hay 120, 60 y 30 ejemplares de tres libros. ¿Cuál es la mayor cantidad de cajas iguales que se arman sin que sobre ninguno?",["30","60","10"],0,"Es el máximo común divisor de 120, 60 y 30, y cada caja tendrá 4, 2 y 1 libros."]
+];
+var SOC=[
+["¿Quiénes integraron la primera Junta Militar de 1976?",["Videla, Massera y Agosti","Perón, Frondizi e Illia","Alfonsín, Menem y Kirchner"],0,"Fue el sexto golpe de Estado en la historia argentina (24 de marzo de 1976)."],
+["Durante la dictadura de 1976 NO existía…",["la libertad de expresión","la censura","la prohibición de la actividad política"],0,"Se disolvió el Congreso y se prohibió la actividad política y sindical."],
+["El terrorismo de Estado fue…",["una represión ilegal desde el Estado, con secuestros y desaparición de personas","un conflicto entre países","una forma de votar"],0,"Se violaron de forma sistemática los derechos humanos."],
+["¿Cuál de estos fue presidente de facto?",["José Félix Uriburu","Hipólito Yrigoyen","Raúl Alfonsín"],0,"Uriburu gobernó luego del golpe de 1930. Los otros fueron elegidos por voto."],
+["Las Abuelas de Plaza de Mayo buscan…",["a los nietos apropiados durante la dictadura","a los ladrones de bancos","a los candidatos"],0,"Ese trabajo defiende el derecho a la identidad."],
+["Los pañuelos blancos son un símbolo de…",["las Madres de Plaza de Mayo y su lucha por los desaparecidos","un club de fútbol","la escuela"],0,"«Nunca más» expresa que no se repitan violaciones a los derechos humanos."],
+["La ley Sáenz Peña (1912) estableció el voto…",["secreto y obligatorio para los varones","cantado y optativo","para hombres y mujeres"],0,"Buscaba terminar con el fraude electoral. Las mujeres votaron desde 1951."],
+["El voto femenino fue establecido en 1947, durante el gobierno de…",["Juan Domingo Perón","Julio A. Roca","Hipólito Yrigoyen"],0,"Eva Perón impulsó la ley."],
+["Se decía que la Argentina era «el granero del mundo» porque…",["exportaba cereales y carnes a países industrializados","fabricaba autos","importaba trigo"],0,"Era el modelo agroexportador (hasta 1930), con Gran Bretaña como gran socia."],
+["¿Quién ejerce el Poder Ejecutivo en la Ciudad de Buenos Aires?",["El Jefe de Gobierno","La Legislatura","La Corte Suprema"],0,"La Legislatura (60 legisladores) dicta las leyes y el Poder Judicial controla su cumplimiento. A nivel nacional, el Ejecutivo es el Presidente."],
+["¿A quiénes ordenó la Corte Suprema, en 2008, sanear el Riachuelo?",["Nación, Provincia de Buenos Aires y Ciudad de Buenos Aires","Entre Ríos, Córdoba y Santa Fe","Solo a las empresas"],0,"El Riachuelo desemboca en el Río de la Plata y la cuenca pertenece a la llanura pampeana."],
+["Nelson Mandela encabezó la lucha contra el apartheid en…",["Sudáfrica","India","Vietnam"],0,"Fue presidente y recibió el Premio Nobel de la Paz. Gandhi lideró la independencia pacífica de la India."]
+];
+function sim(){
+var a=mk("Lengua",LEN,4).concat(mk("Matemática",MAT,4),mk("Sociales",SOC,3),mk("Naturales",NAT,3));
+a.forEach(function(q){q.t='<small>'+q.ar+'</small><br>'+q.t});
+run("Simulacro Premio Beca",a,'<p><small>Como en el examen real: Lengua 30 · Matemática 30 · Sociales 20 · Naturales 20 = 100 puntos.</small></p>');}
+function nat(){run("Ciencias Naturales",mk("Naturales",NAT,10))}
+function jlen(){run("Prácticas del Lenguaje",mk("Lengua",LEN,10))}
+function jmat(){run("Matemática",mk("Matemática",MAT,10))}
+function jsoc(){run("Ciencias Sociales",mk("Sociales",SOC,10))}
+function otras(){app.innerHTML='<button class="ghost" id="back">← Menú</button><h2>📚 Elegí un área</h2><div class="grid">'+tile("len","📖","Prácticas del Lenguaje","Cuentos, poesía, gramática y ortografía")+tile("mat","➗","Matemática","Fracciones, geometría y proporcionalidad")+tile("soc","🗺️","Ciencias Sociales","Democracia, dictadura, Riachuelo y más")+'</div>';document.getElementById("back").onclick=home;app.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){start(b.dataset.g)}})}
+
+/* ---------- Guía ---------- */
+function guia(){
+var d=["Frutas y verduras: la mayor parte de tu alimentación, 5 porciones por día, de distintos colores.","Legumbres, cereales (mejor integrales), papa, batata, choclo y mandioca.","Leche, yogur o queso: 3 porciones por día.","Carnes (sin grasa visible) y huevo (hasta 1 por día). Más pescado.","Aceite crudo (2 cucharadas), frutas secas y semillas sin salar.","Opcional: galletitas, golosinas, gaseosas, fiambres, snacks y otros ultraprocesados. Son los que suelen llevar sellos."];
+var h='<button class="ghost" id="back">← Menú</button><div class="q" style="margin-top:12px"><h2>Los 6 grupos de la gráfica argentina</h2><div class="groups">';
+d.forEach(function(x,i){h+='<div style="background:'+COL[i]+';color:#2b2b2b"><b>'+(i+1)+'.</b> '+x+'</div>'});
+h+='</div><p>💧 Tomá agua segura todos los días, al menos 8 vasos.<br>🧂 Reducí la sal y probá condimentos como orégano, pimienta o perejil.<br>👀 Leé las etiquetas y fijate en los sellos negros.<br>🏠 Preferí comidas caseras hechas con alimentos frescos.</p><p>Según la OMS, una alimentación saludable se basa en 4 principios: <b>adecuación, equilibrio, moderación y diversidad</b>.</p><button class="btn" id="go">¡A jugar!</button></div>';
+app.innerHTML=h;document.getElementById("back").onclick=home;document.getElementById("go").onclick=home;
+}
+home();
+</script>
+</body>
+</html>
